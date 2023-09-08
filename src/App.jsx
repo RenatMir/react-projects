@@ -1,14 +1,11 @@
-import { BrowserRouter } from "react-router-dom";
-import { MazeGenerator } from "./MazeGenerator";
+import { MazeGenerator } from "../projects/maze-generator/MazeGenerator"
+import "./assets/css/app.css"
 
 function App() {
   return (
-    <BrowserRouter>
-      <>
-        <h2>React Projects</h2>
-        <MazeGenerator/>
-      </>
-    </BrowserRouter>
+    <div className="app">
+      <MazeGenerator />
+    </div>
   )
 }
 
