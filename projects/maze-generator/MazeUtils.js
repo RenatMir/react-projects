@@ -26,20 +26,20 @@ export const generateGrid = (dimension) => {
     return (grid);
 }
 
-const drawCell = (cell, mazeData, canvasContext) => {
-    const cellDim = mazeData.height / mazeData.rowsColsNumber;
-    const x = Math.floor(cell.colNum * mazeData.width / mazeData.rowsColsNumber);
-    const y = Math.floor(cell.rowNum * mazeData.height / mazeData.rowsColsNumber);
+const drawCell = (cell, mazeState, canvasContext) => {
+    const cellDim = mazeState.height / mazeState.rowsColsNumber;
+    const x = Math.floor(cell.colNum * mazeState.width / mazeState.rowsColsNumber);
+    const y = Math.floor(cell.rowNum * mazeState.height / mazeState.rowsColsNumber);
 
-    const canvasLineWidth = mazeData.cellBorders.width;
-    canvasContext.strokeStyle = mazeData.cellBorders.color;
-    canvasContext.fillStyle = mazeData.backgroundColor;
+    const canvasLineWidth = mazeState.cellBorders.width;
+    canvasContext.strokeStyle = mazeState.cellBorders.color;
+    canvasContext.fillStyle = mazeState.backgroundColor;
     canvasContext.lineWidth = canvasLineWidth;
 
     canvasContext.fillRect(x, y, cellDim, cellDim);
 
     if (cell.isCurrent) {
-        canvasContext.fillStyle = mazeData.currentCellColor;
+        canvasContext.fillStyle = mazeState.currentCellColor;
         canvasContext.fillRect(x, y, cellDim, cellDim);
     }
     if (cell.walls.top) drawTopWall(x, y, cellDim, canvasContext);
@@ -76,12 +76,12 @@ const drawCell = (cell, mazeData, canvasContext) => {
     }
 }
 
-export const drawCells = (grid, mazeData, canvasContext) => {
+export const drawCells = (grid, mazeState, canvasContext) => {
     let cell;
-    for (let rowIndex = 0; rowIndex < mazeData.rowsColsNumber; rowIndex++) {
-        for (let colIndex = 0; colIndex < mazeData.rowsColsNumber; colIndex++) {
+    for (let rowIndex = 0; rowIndex < mazeState.rowsColsNumber; rowIndex++) {
+        for (let colIndex = 0; colIndex < mazeState.rowsColsNumber; colIndex++) {
             cell = grid[rowIndex][colIndex];
-            drawCell(cell, mazeData, canvasContext);
+            drawCell(cell, mazeState, canvasContext);
         }
     }
 }

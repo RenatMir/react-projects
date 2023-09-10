@@ -2,21 +2,19 @@ import { useEffect } from "react"
 import { checkNeighbours, drawCells, generateGrid, removeWalls } from "./MazeUtils";
 
 export const Maze = (props) => {
-    const { mazeData, mazeCompletedState, canvasRef } = props;
-    const { mazeCompleted, setMazeCompleted } = mazeCompletedState;
+    const { mazeStateObj, canvasRef } = props;
+    const { mazeState, setMazeState } = mazeStateObj;
 
-    const grid = generateGrid(mazeData.rowsColsNumber, mazeData.end);
+    const grid = generateGrid(mazeState.rowsColsNumber, mazeState.end);
 
     const stack = [];
-    let currentCell = grid[mazeData.start.rowNum][mazeData.start.colNum];
+    let currentCell = grid[mazeState.start.rowNum][mazeState.start.colNum];
     stack.push(currentCell);
     currentCell.isVisited = true;
     currentCell.isCurrent = true;
 
-    const generateMaze = (canvasContext) => {
-        drawCells(grid, mazeData, canvasContext);
-
-        let nextCell = checkNeighbours(currentCell, grid, mazeData);
+    const generateMaze = () => {
+        let nextCell = checkNeighbours(currentCell, grid, mazeState);
         if (nextCell) {
             nextCell.isVisited = true;
             stack.push(currentCell);
@@ -31,7 +29,14 @@ export const Maze = (props) => {
             currentCell = stack.pop();
             currentCell.isCurrent = true;
         } else {
-            setMazeCompleted(true);
+            console.log("Done");
+            setMazeState(prevState => {
+                return {
+                    ...prevState,
+                    isStarted: false,
+                    isCompleted: true
+                };
+            });
         }
     }
 
@@ -42,22 +47,27 @@ export const Maze = (props) => {
         let timeout;
 
         const generateMazeAnimator = () => {
-            if (mazeCompleted) {
+            if (mazeState.isCompleted) return;
+
+            drawCells(grid, mazeState, canvasContext);
+
+            if (!mazeState.isStarted) {
                 return;
+            } else {
+                generateMaze();
             }
 
-            generateMaze(canvasContext);
             timeout = setTimeout(() => {
                 animationFrameId = window.requestAnimationFrame(generateMazeAnimator);
-            }, mazeData.speed);
+            }, mazeState.speed);
         }
-        generateMazeAnimator()
+        generateMazeAnimator();
 
         return () => {
             clearTimeout(timeout);
             window.cancelAnimationFrame(animationFrameId)
         }
-    }, [mazeCompleted]);
+    }, [mazeState]);
 
     return (
         <></>
