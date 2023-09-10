@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { drawCells, generateGrid, removeWalls } from "./MazeUtils";
+import { checkNeighbours, drawCells, generateGrid, removeWalls } from "./MazeUtils";
 
 export const Maze = (props) => {
     const { mazeData, mazeCompletedState, canvasRef } = props;
