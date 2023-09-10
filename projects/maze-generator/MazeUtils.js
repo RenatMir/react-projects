@@ -12,6 +12,14 @@ const createCell = (rowNum, colNum) => {
         }
     }
 }
+
+export const MazeStatusEnum = {
+    CREATED: "CREATED",
+    STARTED: "STARTED",
+    STOPPED: "STOPPED",
+    FINISHED: "FINISHED",
+}
+
 export const generateGrid = (dimension) => {
     const grid = [];
     for (let row = 0; row < dimension; row++) {

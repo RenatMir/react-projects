@@ -1,20 +1,19 @@
 import { useEffect } from "react"
-import { checkNeighbours, drawCells, generateGrid, removeWalls } from "./MazeUtils";
+import { MazeStatusEnum, checkNeighbours, drawCells, removeWalls } from "./MazeUtils";
 
 export const Maze = (props) => {
-    const { mazeStateObj, canvasRef } = props;
-    const { mazeState, setMazeState } = mazeStateObj;
-
-    const grid = generateGrid(mazeState.rowsColsNumber, mazeState.end);
+    const { canvasRef, state, } = props;
+    const { mazeFEState, mazeBEState, utilFunctions } = state;
+    const { isValidStatus, setStatus } = utilFunctions;
 
     const stack = [];
-    let currentCell = grid[mazeState.start.rowNum][mazeState.start.colNum];
+    let currentCell = mazeBEState.grid[mazeFEState.start.rowNum][mazeFEState.start.colNum];
     stack.push(currentCell);
     currentCell.isVisited = true;
     currentCell.isCurrent = true;
 
     const generateMaze = () => {
-        let nextCell = checkNeighbours(currentCell, grid, mazeState);
+        let nextCell = checkNeighbours(currentCell, mazeBEState.grid);
         if (nextCell) {
             nextCell.isVisited = true;
             stack.push(currentCell);
@@ -30,13 +29,7 @@ export const Maze = (props) => {
             currentCell.isCurrent = true;
         } else {
             console.log("Done");
-            setMazeState(prevState => {
-                return {
-                    ...prevState,
-                    isStarted: false,
-                    isCompleted: true
-                };
-            });
+            setStatus(MazeStatusEnum.FINISHED)
         }
     }
 
@@ -47,11 +40,11 @@ export const Maze = (props) => {
         let timeout;
 
         const generateMazeAnimator = () => {
-            if (mazeState.isCompleted) return;
+            if (isValidStatus(MazeStatusEnum.FINISHED)) return;
 
-            drawCells(grid, mazeState, canvasContext);
+            drawCells(mazeBEState.grid, mazeFEState, canvasContext);
 
-            if (!mazeState.isStarted) {
+            if (!isValidStatus(MazeStatusEnum.STARTED)) {
                 return;
             } else {
                 generateMaze();
@@ -59,15 +52,19 @@ export const Maze = (props) => {
 
             timeout = setTimeout(() => {
                 animationFrameId = window.requestAnimationFrame(generateMazeAnimator);
-            }, mazeState.speed);
+            }, mazeFEState.speed);
         }
         generateMazeAnimator();
 
+        if (isValidStatus(MazeStatusEnum.STOPPED)) {
+            window.cancelAnimationFrame(animationFrameId);
+        }
+
         return () => {
             clearTimeout(timeout);
-            window.cancelAnimationFrame(animationFrameId)
+            window.cancelAnimationFrame(animationFrameId);
         }
-    }, [mazeState]);
+    }, [mazeBEState, mazeFEState]);
 
     return (
         <></>
