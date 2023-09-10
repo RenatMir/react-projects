@@ -42,12 +42,9 @@ export const Maze = (props) => {
             currentCell = mazeBEState.stack.pop();
             currentCell.isCurrent = true;
         } else {
-            console.log("Done");
             setStatus(MazeStatusEnum.FINISHED)
             return true;
         }
-
-        console.table(mazeBEState.stack);
     }
 
     useEffect(() => {
