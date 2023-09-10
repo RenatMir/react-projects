@@ -2,6 +2,8 @@ import { useEffect } from "react"
 import { MazeStatusEnum, checkNeighbours, drawCells, removeWalls } from "./MazeUtils";
 
 let currentCell;
+let frames;
+let renderNextFrame;
 
 export const Maze = (props) => {
     const { canvasRef, state } = props;
@@ -13,6 +15,8 @@ export const Maze = (props) => {
         currentCell.isVisited = true;
         currentCell.isCurrent = true;
         mazeBEState.stack.push(currentCell);
+        frames = 0;
+        renderNextFrame = false;
     }
 
     const generateMaze = () => {
@@ -20,9 +24,9 @@ export const Maze = (props) => {
         if (nextCell) {
             nextCell.isVisited = true;
             mazeBEState.stack.push(currentCell);
-
+            
             removeWalls(currentCell, nextCell)
-
+            
             currentCell.isCurrent = false;
             currentCell = nextCell;
             currentCell.isCurrent = true;
@@ -33,24 +37,38 @@ export const Maze = (props) => {
         } else {
             console.log("Done");
             setStatus(MazeStatusEnum.FINISHED)
+            return true;
         }
+        console.log("here", nextCell, currentCell, mazeBEState.stack);
     }
 
     useEffect(() => {
         const canvas = canvasRef.current;
         const canvasContext = canvas.getContext('2d');
+
+        const nextFrameButton = document.getElementById('next-frame-button');
+        nextFrameButton.addEventListener('click', () => {
+            renderNextFrame = true;
+        });
+
         let animationFrameId;
         let timeout;
 
         const generateMazeAnimator = () => {
             if (isValidStatus(MazeStatusEnum.FINISHED)) return;
 
-            drawCells(mazeBEState.grid, mazeFEState, canvasContext);
+            console.log("HERE");
+            if (!isValidStatus(MazeStatusEnum.STOPPED)) drawCells(mazeBEState.grid, mazeFEState, canvasContext);
 
             if (!isValidStatus(MazeStatusEnum.STARTED)) {
                 return;
             } else {
-                generateMaze();
+                frames++;
+                const isMazeGenerated = generateMaze();
+                if (renderNextFrame && !isMazeGenerated) {
+                    setStatus(MazeStatusEnum.STOPPED);
+                    renderNextFrame = false;
+                }
             }
 
             timeout = setTimeout(() => {
@@ -58,10 +76,6 @@ export const Maze = (props) => {
             }, mazeFEState.speed);
         }
         generateMazeAnimator();
-
-        if (isValidStatus(MazeStatusEnum.STOPPED)) {
-            window.cancelAnimationFrame(animationFrameId);
-        }
 
         return () => {
             clearTimeout(timeout);
