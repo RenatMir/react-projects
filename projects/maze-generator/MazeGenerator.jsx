@@ -3,6 +3,7 @@ import { useRef, useState } from "react"
 
 import "./assets/maze-generator.css"
 import { generateGrid, MazeStatusEnum } from "./MazeUtils";
+import { useEffect } from "react";
 
 const getMazeFEState = (state) => {
     return {
@@ -66,6 +67,10 @@ export const MazeGenerator = () => {
         return mazeBEState.status === status;
     }
 
+    const getStatus = () => {
+        return mazeBEState.status;
+    }
+
     const setStatus = (status) => {
         setMazeBEState(prev => {
             return {
@@ -78,6 +83,7 @@ export const MazeGenerator = () => {
     return (
         <>
             <h2>Maze Generator</h2>
+            <h2>Status: {getStatus()}</h2>
             <button onClick={() => {
                 if (mazeBEState.status === MazeStatusEnum.STARTED) return;
 
@@ -103,7 +109,7 @@ export const MazeGenerator = () => {
                 })
             }}>Stop</button>
             <canvas ref={canvasRef} className="maze-canvas" height={mazeFEState.height} width={mazeFEState.width} onClick={handleCanvasClick} />
-            <Maze state={{ mazeFEState, mazeBEState, utilFunctions: { isValidStatus, setStatus } }} canvasRef={canvasRef} />
+            <Maze state={{ mazeFEState, mazeBEState, utilFunctions: { isValidStatus, setStatus, getStatus } }} canvasRef={canvasRef} />
         </>
     );
 }

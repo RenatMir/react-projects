@@ -1,31 +1,34 @@
 import { useEffect } from "react"
 import { MazeStatusEnum, checkNeighbours, drawCells, removeWalls } from "./MazeUtils";
 
-export const Maze = (props) => {
-    const { canvasRef, state, } = props;
-    const { mazeFEState, mazeBEState, utilFunctions } = state;
-    const { isValidStatus, setStatus } = utilFunctions;
+let currentCell;
 
-    const stack = [];
-    let currentCell = mazeBEState.grid[mazeFEState.start.rowNum][mazeFEState.start.colNum];
-    stack.push(currentCell);
-    currentCell.isVisited = true;
-    currentCell.isCurrent = true;
+export const Maze = (props) => {
+    const { canvasRef, state } = props;
+    const { mazeFEState, mazeBEState, utilFunctions } = state;
+    const { isValidStatus, setStatus, getStatus } = utilFunctions;
+
+    if (isValidStatus(MazeStatusEnum.CREATED)) {
+        currentCell = mazeBEState.grid[mazeFEState.start.rowNum][mazeFEState.start.colNum];
+        currentCell.isVisited = true;
+        currentCell.isCurrent = true;
+        mazeBEState.stack.push(currentCell);
+    }
 
     const generateMaze = () => {
         let nextCell = checkNeighbours(currentCell, mazeBEState.grid);
         if (nextCell) {
             nextCell.isVisited = true;
-            stack.push(currentCell);
+            mazeBEState.stack.push(currentCell);
 
             removeWalls(currentCell, nextCell)
 
             currentCell.isCurrent = false;
             currentCell = nextCell;
             currentCell.isCurrent = true;
-        } else if (stack.length > 0) {
+        } else if (mazeBEState.stack.length > 0) {
             currentCell.isCurrent = false;
-            currentCell = stack.pop();
+            currentCell = mazeBEState.stack.pop();
             currentCell.isCurrent = true;
         } else {
             console.log("Done");
