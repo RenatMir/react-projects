@@ -9,7 +9,7 @@ const getMazeFEState = (state) => {
         height: state?.height ?? 800,
         width: state?.width ?? 800,
         rowsColsNumber: state?.rowsColsNumber ?? 3,
-        speed: state?.speed ?? 1000,
+        speed: state?.speed ?? 100,
         currentCellColor: state?.currentCellColor ?? "green",
         backgroundColor: state?.backgroundColor ?? "#413d3d",
         start: state?.start ?? {
@@ -33,8 +33,8 @@ const getMazeBEState = (state) => {
 
 export const MazeGenerator = () => {
     const canvasRef = useRef(null);
-    const [mazeFEState, setMazeFEState] = useState(getMazeFEState);
-    const [mazeBEState, setMazeBEState] = useState(getMazeBEState);
+    const [mazeFEState, setMazeFEState] = useState(getMazeFEState());
+    const [mazeBEState, setMazeBEState] = useState(getMazeBEState());
 
     const isValidStatus = (status) => {
         return mazeBEState.status === status;
@@ -54,6 +54,8 @@ export const MazeGenerator = () => {
     }
 
     const handleCanvasClick = (event) => {
+        if (!isValidStatus(MazeStatusEnum.CREATED)) return;
+
         const rect = canvasRef.current.getBoundingClientRect();
         const scaleX = canvasRef.current.width / rect.width;
         const scaleY = canvasRef.current.height / rect.height;
@@ -61,22 +63,19 @@ export const MazeGenerator = () => {
         const x = (event.clientX - rect.left) * scaleX;
         const y = (event.clientY - rect.top) * scaleY;
 
-
         const cellDim = mazeFEState.height / mazeFEState.rowsColsNumber;
         const rowNum = Math.floor(Math.abs(y) / cellDim);
         const colNum = Math.floor(Math.abs(x) / cellDim);
 
-        if (!isValidStatus(MazeStatusEnum.STARTED) && !isValidStatus(MazeStatusEnum.FINISHED)) {
-            setMazeFEState(prev => {
-                return ({
-                    ...prev,
-                    start: {
-                        rowNum,
-                        colNum
-                    }
-                });
-            })
-        }
+        setMazeFEState(prev => {
+            return ({
+                ...prev,
+                start: {
+                    rowNum,
+                    colNum
+                }
+            });
+        })
     }
 
     return (
@@ -88,8 +87,8 @@ export const MazeGenerator = () => {
                 setStatus(MazeStatusEnum.STARTED);
             }}>Start</button>
             <button onClick={() => {
-                setMazeFEState(getMazeFEState)
-                setMazeBEState(getMazeBEState)
+                setMazeFEState(getMazeFEState())
+                setMazeBEState(getMazeBEState())
             }}>Reset</button>
             <button onClick={() => {
                 if (!isValidStatus(MazeStatusEnum.STARTED)) return;

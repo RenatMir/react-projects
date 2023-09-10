@@ -11,12 +11,19 @@ export const Maze = (props) => {
     const { isValidStatus, setStatus, getStatus } = utilFunctions;
 
     if (isValidStatus(MazeStatusEnum.CREATED)) {
+        frames = 0;
+        renderNextFrame = false;
+
+        if(currentCell) {
+            currentCell.isCurrent = false;
+            currentCell.isVisited = false;
+            mazeBEState.stack = [];
+        }
+
         currentCell = mazeBEState.grid[mazeFEState.start.rowNum][mazeFEState.start.colNum];
         currentCell.isVisited = true;
         currentCell.isCurrent = true;
         mazeBEState.stack.push(currentCell);
-        frames = 0;
-        renderNextFrame = false;
     }
 
     const generateMaze = () => {
@@ -39,7 +46,8 @@ export const Maze = (props) => {
             setStatus(MazeStatusEnum.FINISHED)
             return true;
         }
-        console.log("here", nextCell, currentCell, mazeBEState.stack);
+
+        console.table(mazeBEState.stack);
     }
 
     useEffect(() => {
@@ -57,7 +65,6 @@ export const Maze = (props) => {
         const generateMazeAnimator = () => {
             if (isValidStatus(MazeStatusEnum.FINISHED)) return;
 
-            console.log("HERE");
             if (!isValidStatus(MazeStatusEnum.STOPPED)) drawCells(mazeBEState.grid, mazeFEState, canvasContext);
 
             if (!isValidStatus(MazeStatusEnum.STARTED)) {
