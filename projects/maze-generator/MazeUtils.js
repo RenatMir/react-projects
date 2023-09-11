@@ -13,6 +13,17 @@ const createCell = (rowNum, colNum) => {
     }
 }
 
+export const MazeGenerationAlgorithms = {
+    DFS: {
+        key: "DFS",
+        name: "Depth First Search Algorithm"
+    },
+    BFS: {
+        key: "BFS",
+        name: "Breadth First Search Algorithm"
+    }
+}
+
 export const MazeStatusEnum = {
     CREATED: "CREATED",
     STARTED: "STARTED",

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 import { Maze } from "./Maze";
-import { generateGrid, MazeStatusEnum } from "./MazeUtils";
+import { generateGrid, MazeGenerationAlgorithms, MazeStatusEnum } from "./MazeUtils";
 
 import "./assets/maze-generator.css"
 
@@ -8,10 +8,11 @@ const getMazeFEState = (state) => {
     return {
         height: state?.height ?? 800,
         width: state?.width ?? 800,
-        rowsColsNumber: state?.rowsColsNumber ?? 3,
-        speed: state?.speed ?? 100,
+        rowsColsNumber: state?.rowsColsNumber ?? 20,
+        speed: state?.speed ?? 0,
         currentCellColor: state?.currentCellColor ?? "green",
         backgroundColor: state?.backgroundColor ?? "#413d3d",
+        algorithm: MazeGenerationAlgorithms.DFS,
         start: state?.start ?? {
             rowNum: 0,
             colNum: 0
@@ -25,7 +26,7 @@ const getMazeFEState = (state) => {
 
 const getMazeBEState = (state) => {
     return {
-        grid: generateGrid(state?.rowsColsNumber ?? 3),
+        grid: generateGrid(state?.rowsColsNumber ?? 20),
         status: MazeStatusEnum.CREATED,
         stack: []
     }
@@ -68,18 +69,25 @@ export const MazeGenerator = () => {
         const colNum = Math.floor(Math.abs(x) / cellDim);
 
         setMazeFEState(prev => {
-            return ({
+            return {
                 ...prev,
                 start: {
                     rowNum,
                     colNum
                 }
-            });
-        })
+            };
+        });
+
+        setMazeBEState(prev => {
+            return {
+                ...prev,
+                grid: generateGrid(mazeFEState.rowsColsNumber)
+            }
+        });
     }
 
     return (
-        <>
+        <div className="maze-generator-page">
             <h2>Maze Generator</h2>
             <button onClick={() => {
                 if (!isValidStatus(MazeStatusEnum.CREATED) && !isValidStatus(MazeStatusEnum.STOPPED)) return;
@@ -101,7 +109,7 @@ export const MazeGenerator = () => {
                 setStatus(MazeStatusEnum.STARTED);
             }}>Next Frame</button>
             <canvas ref={canvasRef} className="maze-canvas" height={mazeFEState.height} width={mazeFEState.width} onClick={handleCanvasClick} />
-            <Maze state={{ mazeFEState, mazeBEState, utilFunctions: { isValidStatus, setStatus, getStatus } }} canvasRef={canvasRef} />
-        </>
+            <Maze state={{ mazeFEState, mazeBEState, utilFunctions: { isValidStatus, setStatus } }} canvasRef={canvasRef} />
+        </div>
     );
 }

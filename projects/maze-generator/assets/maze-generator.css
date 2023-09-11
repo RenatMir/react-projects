@@ -1,4 +1,7 @@
-.maze-canvas {
-    border: 0;
-    margin: 0;
+.maze-generator-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: inherit;
+    min-width: inherit;
 }

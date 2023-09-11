@@ -8,7 +8,7 @@ let renderNextFrame;
 export const Maze = (props) => {
     const { canvasRef, state } = props;
     const { mazeFEState, mazeBEState, utilFunctions } = state;
-    const { isValidStatus, setStatus, getStatus } = utilFunctions;
+    const { isValidStatus, setStatus } = utilFunctions;
 
     if (isValidStatus(MazeStatusEnum.CREATED)) {
         frames = 0;
@@ -26,7 +26,7 @@ export const Maze = (props) => {
         mazeBEState.stack.push(currentCell);
     }
 
-    const generateMaze = () => {
+    const generateMazeStep = () => {
         let nextCell = checkNeighbours(currentCell, mazeBEState.grid);
         if (nextCell) {
             nextCell.isVisited = true;
@@ -52,7 +52,7 @@ export const Maze = (props) => {
         const canvasContext = canvas.getContext('2d');
 
         const nextFrameButton = document.getElementById('next-frame-button');
-        nextFrameButton.addEventListener('click', () => {
+        nextFrameButton?.addEventListener('click', () => {
             renderNextFrame = true;
         });
 
@@ -61,14 +61,16 @@ export const Maze = (props) => {
 
         const generateMazeAnimator = () => {
             if (isValidStatus(MazeStatusEnum.FINISHED)) return;
-
+            
             if (!isValidStatus(MazeStatusEnum.STOPPED)) drawCells(mazeBEState.grid, mazeFEState, canvasContext);
+            
+            if (isValidStatus(MazeStatusEnum.CREATED)) generateMazeStep();
 
             if (!isValidStatus(MazeStatusEnum.STARTED)) {
                 return;
             } else {
                 frames++;
-                const isMazeGenerated = generateMaze();
+                const isMazeGenerated = generateMazeStep();
                 if (renderNextFrame && !isMazeGenerated) {
                     setStatus(MazeStatusEnum.STOPPED);
                     renderNextFrame = false;
