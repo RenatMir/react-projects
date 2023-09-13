@@ -12,6 +12,7 @@ export const MazeGenerator = () => {
     const [mazeBEState, setMazeBEState] = useState(getMazeBEInitialState());
     const algorithmsSelect = useMemo(() => mazeGenerationAlgorithmsToSelect(), []);
 
+    //TEMP
     return (
         <div className="page">
             <div className="settings">
