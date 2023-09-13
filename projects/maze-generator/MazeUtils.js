@@ -1,3 +1,31 @@
+export const getMazeFEInitialState = () => {
+    return {
+        height: 800,
+        width: 800,
+        rowsColsNumber: 20,
+        delay: 0,
+        currentCellColor: "green",
+        backgroundColor: "#413d3d",
+        start: {
+            rowNum: 0,
+            colNum: 0
+        },
+        cellBorders: {
+            color: "white",
+            width: 2
+        }
+    }
+}
+
+export const getMazeBEInitialState = () => {
+    return {
+        grid: generateGrid(20),
+        status: MazeStatusEnum.CREATED,
+        algorithm: MazeGenerationAlgorithms.DFS,
+        stack: []
+    }
+}
+
 const createCell = (rowNum, colNum) => {
     return {
         rowNum,
@@ -15,13 +43,22 @@ const createCell = (rowNum, colNum) => {
 
 export const MazeGenerationAlgorithms = {
     DFS: {
-        key: "DFS",
-        name: "Depth First Search Algorithm"
+        value: "DFS",
+        label: "Depth First Search Algorithm"
     },
     BFS: {
-        key: "BFS",
-        name: "Breadth First Search Algorithm"
+        value: "BFS",
+        label: "Breadth First Search Algorithm"
     }
+}
+
+export const mazeGenerationAlgorithmsToSelect = () => {
+    const result = [];
+    Object.keys(MazeGenerationAlgorithms)
+        .forEach(algorithmKey => {
+            result.push(MazeGenerationAlgorithms[algorithmKey]);
+        });
+    return result;
 }
 
 export const MazeStatusEnum = {

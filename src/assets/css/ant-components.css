@@ -1,0 +1,20 @@
+.ant-input-number {
+    width: 4.5rem;
+}
+
+.ant-input-number-input-wrap>input {
+    padding: 4px 6px;
+}
+
+.ant-slider>.ant-slider-rail {
+    background-color: white;
+}
+
+.ant-select-disabled>.ant-select-selector>.ant-select-selection-item{
+    color: white;
+}
+
+.ant-input-number-disabled{
+    color: white;
+    transition: none;
+}

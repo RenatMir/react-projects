@@ -7,8 +7,10 @@ let renderNextFrame;
 
 export const Maze = (props) => {
     const { canvasRef, state } = props;
-    const { mazeFEState, mazeBEState, utilFunctions } = state;
-    const { isValidStatus, setStatus } = utilFunctions;
+    const { mazeFEStateObj, mazeBEStateObj } = state;
+    const { mazeFEState } = mazeFEStateObj;
+    const { mazeBEState, utilFunctionsStateBE } = mazeBEStateObj;
+    const { isValidStatus, setStatus } = utilFunctionsStateBE;
 
     if (isValidStatus(MazeStatusEnum.CREATED)) {
         frames = 0;
@@ -64,8 +66,6 @@ export const Maze = (props) => {
             
             if (!isValidStatus(MazeStatusEnum.STOPPED)) drawCells(mazeBEState.grid, mazeFEState, canvasContext);
             
-            if (isValidStatus(MazeStatusEnum.CREATED)) generateMazeStep();
-
             if (!isValidStatus(MazeStatusEnum.STARTED)) {
                 return;
             } else {
@@ -79,7 +79,7 @@ export const Maze = (props) => {
 
             timeout = setTimeout(() => {
                 animationFrameId = window.requestAnimationFrame(generateMazeAnimator);
-            }, mazeFEState.speed);
+            }, mazeFEState.delay);
         }
         generateMazeAnimator();
 

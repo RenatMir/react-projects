@@ -1,4 +1,4 @@
-import { MazeGenerator } from "../projects/maze-generator/MazeGenerator"
+import { MazeGenerator } from "./pages/MazeGenerator"
 
 function App() {
   return (
