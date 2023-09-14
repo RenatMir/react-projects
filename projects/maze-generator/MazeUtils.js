@@ -44,12 +44,14 @@ const createCell = (rowNum, colNum) => {
 export const MazeGenerationAlgorithms = {
     DFS: {
         value: "DFS",
-        label: "Depth First Search Algorithm"
+        label: "Depth First Search Algorithm",
+        filePath: "dfs/dfs.js"
     },
-    BFS: {
-        value: "BFS",
-        label: "Breadth First Search Algorithm"
-    }
+    // BFS: {
+    //     value: "BFS",
+    //     label: "Breadth First Search Algorithm",
+    //     filePath: "bfs/bfs.js"
+    // }
 }
 
 export const mazeGenerationAlgorithmsToSelect = () => {
@@ -64,6 +66,7 @@ export const mazeGenerationAlgorithmsToSelect = () => {
 export const MazeStatusEnum = {
     CREATED: "CREATED",
     STARTED: "STARTED",
+    NEXT_FRAME: "NEXT_FRAME",
     STOPPED: "STOPPED",
     FINISHED: "FINISHED",
 }

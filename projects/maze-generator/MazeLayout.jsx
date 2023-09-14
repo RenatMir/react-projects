@@ -3,7 +3,7 @@ import { Maze } from "./Maze";
 import { MazeStatusEnum } from "./MazeUtils";
 
 export const MazeLayout = (props) => {
-    const { state } = props;
+    const { state, algorithmModule } = props;
     const { mazeFEStateObj, mazeBEStateObj } = state;
     const { mazeFEState, utilFunctionsStateFE } = mazeFEStateObj;
     const { mazeBEState, utilFunctionsStateBE } = mazeBEStateObj;
@@ -14,8 +14,27 @@ export const MazeLayout = (props) => {
 
     return (
         <>
-            <canvas ref={canvasRef} className="maze-canvas" height={mazeFEState.height} width={mazeFEState.width} onClick={handleCanvasClick} />
-            <Maze state={{ mazeFEStateObj: { mazeFEState, utilFunctionsStateFE }, mazeBEStateObj: { mazeBEState, utilFunctionsStateBE } }} canvasRef={canvasRef} />
+            <canvas
+                ref={canvasRef}
+                className="maze-canvas"
+                height={mazeFEState.height}
+                width={mazeFEState.width}
+                onClick={handleCanvasClick}
+            />
+            <Maze
+                state={{
+                    mazeFEStateObj: {
+                        mazeFEState,
+                        utilFunctionsStateFE
+                    },
+                    mazeBEStateObj: {
+                        mazeBEState,
+                        utilFunctionsStateBE
+                    }
+                }}
+                canvasRef={canvasRef}
+                algorithmModule={algorithmModule}
+            />
         </>
     );
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { MazeLayout } from "../../projects/maze-generator/MazeLayout";
 import { MazeGenerationAlgorithms, MazeStatusEnum, generateGrid, getMazeBEInitialState, getMazeFEInitialState, mazeGenerationAlgorithmsToSelect } from "../../projects/maze-generator/MazeUtils";
 import { Slider, InputNumber, Select, ColorPicker } from "antd";
@@ -10,7 +10,18 @@ import "../assets/css/ant-components.css"
 export const MazeGenerator = () => {
     const [mazeFEState, setMazeFEState] = useState(getMazeFEInitialState());
     const [mazeBEState, setMazeBEState] = useState(getMazeBEInitialState());
+    const [algorithmModule, setAlgorithmModule] = useState(null);
+
     const algorithmsSelect = useMemo(() => mazeGenerationAlgorithmsToSelect(), []);
+
+    useEffect(() => {
+        const loadAlgorithmModule = async () => {
+            const algorithmModule = await import(`../../projects/maze-generator/algorithms/${mazeBEState.algorithm.filePath}`);
+            setAlgorithmModule(algorithmModule);
+        }
+
+        loadAlgorithmModule();
+    }, [mazeBEState.algorithm]);
 
     return (
         <div className="page">
@@ -50,14 +61,14 @@ export const MazeGenerator = () => {
                         </div>
                         <div className="setting-value">
                             <Slider
-                                disabled={!isValidStatus(MazeStatusEnum.CREATED) && !isValidStatus(MazeStatusEnum.STOPPED)}
+                                disabled={isValidStatus(MazeStatusEnum.STARTED)}
                                 min={0}
                                 max={2000}
                                 onChange={handleDelaySettingUpdate}
                                 value={mazeFEState.delay}
                             />
                             <InputNumber
-                                disabled={!isValidStatus(MazeStatusEnum.CREATED) && !isValidStatus(MazeStatusEnum.STOPPED)}
+                                disabled={isValidStatus(MazeStatusEnum.STARTED)}
                                 min={0}
                                 max={2000}
                                 value={mazeFEState.delay}
@@ -99,23 +110,26 @@ export const MazeGenerator = () => {
                     <button className="project-button" id="next-frame-button" onClick={handleNextFrameClick}>Next Frame</button>
                 </div>
 
-                <MazeLayout state={{
-                    mazeFEStateObj: {
-                        mazeFEState,
-                        utilFunctionsStateFE: {
-                            setStartCell
+                <MazeLayout
+                    state={{
+                        mazeFEStateObj: {
+                            mazeFEState,
+                            utilFunctionsStateFE: {
+                                setStartCell
+                            }
+                        },
+                        mazeBEStateObj: {
+                            mazeBEState,
+                            utilFunctionsStateBE: {
+                                isValidStatus,
+                                getStatus,
+                                setStatus,
+                                resetGrid
+                            }
                         }
-                    },
-                    mazeBEStateObj: {
-                        mazeBEState,
-                        utilFunctionsStateBE: {
-                            isValidStatus,
-                            getStatus,
-                            setStatus,
-                            resetGrid
-                        }
-                    }
-                }} />
+                    }}
+                    algorithmModule={algorithmModule}
+                />
             </div>
 
             <div className="stack"></div>
@@ -229,7 +243,7 @@ export const MazeGenerator = () => {
     function handleNextFrameClick() {
         if (isValidStatus(MazeStatusEnum.FINISHED)) return;
 
-        setStatus(MazeStatusEnum.STARTED);
+        setStatus(MazeStatusEnum.NEXT_FRAME);
     }
 
     function handleGridSizeSettingUpdate(newRowColsValue) {
