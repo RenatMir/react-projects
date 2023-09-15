@@ -16,3 +16,8 @@ body {
   min-width: 100dvw;
   min-height: 100dvh;
 }
+
+.pages-container {
+  min-width: inherit;
+  min-height: inherit;
+}

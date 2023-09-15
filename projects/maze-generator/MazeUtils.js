@@ -44,12 +44,12 @@ const createCell = (rowNum, colNum) => {
 export const MazeGenerationAlgorithms = {
     DFS: {
         value: "DFS",
-        label: "Depth First Search Algorithm",
+        label: "Depth First Search",
         filePath: "dfs/dfs"
     },
     // BFS: {
     //     value: "BFS",
-    //     label: "Breadth First Search Algorithm",
+    //     label: "Breadth First Search",
     //     filePath: "bfs/bfs"
     // }
 }
