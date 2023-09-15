@@ -1,11 +1,11 @@
 import { useState, useMemo, useEffect } from "react";
-import { MazeLayout } from "../../projects/maze-generator/MazeLayout";
-import { MazeGenerationAlgorithms, MazeStatusEnum, generateGrid, getMazeBEInitialState, getMazeFEInitialState, mazeGenerationAlgorithmsToSelect } from "../../projects/maze-generator/MazeUtils";
+import { MazeLayout } from "#root/projects/maze-generator/MazeLayout";
+import { MazeGenerationAlgorithms, MazeStatusEnum, generateGrid, getMazeBEInitialState, getMazeFEInitialState, mazeGenerationAlgorithmsToSelect } from "#root/projects/maze-generator/MazeUtils";
 import { Slider, InputNumber, Select, ColorPicker } from "antd";
 
-import "../assets/css/pages/maze-generator.css"
-import "../assets/css/components.css"
-import "../assets/css/ant-components.css"
+import "@/assets/css/pages/maze-generator.css"
+import "@/assets/css/components.css"
+import "@/assets/css/ant-components.css"
 
 export const MazeGenerator = () => {
     const [mazeFEState, setMazeFEState] = useState(getMazeFEInitialState());
@@ -16,7 +16,7 @@ export const MazeGenerator = () => {
 
     useEffect(() => {
         const loadAlgorithmModule = async () => {
-            const algorithmModule = await import(`../../projects/maze-generator/algorithms/${mazeBEState.algorithm.filePath}`);
+            const algorithmModule = await import(`#root/projects/maze-generator/algorithms/${mazeBEState.algorithm.filePath}.js`);
             setAlgorithmModule(algorithmModule);
         }
 

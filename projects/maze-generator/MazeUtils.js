@@ -17,9 +17,9 @@ export const getMazeFEInitialState = () => {
     }
 }
 
-export const getMazeBEInitialState = () => {
+export const getMazeBEInitialState = (start) => {
     return {
-        grid: generateGrid(20),
+        grid: generateGrid(20, start),
         status: MazeStatusEnum.CREATED,
         algorithm: MazeGenerationAlgorithms.DFS,
         stack: []
@@ -45,12 +45,12 @@ export const MazeGenerationAlgorithms = {
     DFS: {
         value: "DFS",
         label: "Depth First Search Algorithm",
-        filePath: "dfs/dfs.js"
+        filePath: "dfs/dfs"
     },
     // BFS: {
     //     value: "BFS",
     //     label: "Breadth First Search Algorithm",
-    //     filePath: "bfs/bfs.js"
+    //     filePath: "bfs/bfs"
     // }
 }
 
@@ -71,7 +71,7 @@ export const MazeStatusEnum = {
     FINISHED: "FINISHED",
 }
 
-export const generateGrid = (dimension) => {
+export const generateGrid = (dimension, startCell) => {
     const grid = [];
     for (let row = 0; row < dimension; row++) {
         let rowArray = [];
@@ -81,6 +81,17 @@ export const generateGrid = (dimension) => {
         }
         grid.push(rowArray);
     }
+
+    let startX = 0;
+    let startY = 0;
+    if (startCell) {
+        startX = startCell.rowNum;
+        startY = startCell.colNum;
+    }
+
+    const start = grid[startX][startY];
+    start.isCurrent = true;
+    start.isVisited = true;
 
     return (grid);
 }

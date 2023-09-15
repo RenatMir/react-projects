@@ -1,4 +1,4 @@
-import { MazeStatusEnum, checkNeighbours, removeWalls } from "../../MazeUtils";
+import { MazeStatusEnum, checkNeighbours, removeWalls } from "#root/projects/maze-generator/MazeUtils";
 
 export const init = (currentCellObj, mazeBEState, mazeFEState) => {
     if (currentCellObj.currentCell) {
