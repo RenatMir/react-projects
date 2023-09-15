@@ -82,6 +82,7 @@ export const MazeGenerator = () => {
                         </div>
                         <div className="setting-value">
                             <ColorPicker
+                                disabled={isValidStatus(MazeStatusEnum.STARTED) || isValidStatus(MazeStatusEnum.NEXT_FRAME)}
                                 value={mazeFEState.currentCellColor}
                                 onChange={setCurrentCellColor}
                             />
@@ -93,6 +94,7 @@ export const MazeGenerator = () => {
                         </div>
                         <div className="setting-value">
                             <ColorPicker
+                                disabled={isValidStatus(MazeStatusEnum.STARTED) || isValidStatus(MazeStatusEnum.NEXT_FRAME)}
                                 value={mazeFEState.backgroundColor}
                                 onChange={setMazeBackgroundColor}
                             />
