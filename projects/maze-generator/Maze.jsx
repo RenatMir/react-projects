@@ -10,13 +10,11 @@ const currentCellObj = {
 
 export const Maze = (props) => {
     const { canvasRef, state, algorithmModule } = props;
-    const { mazeFEStateObj, mazeBEStateObj } = state;
-    const { mazeFEState } = mazeFEStateObj;
-    const { mazeBEState, utilFunctionsStateBE } = mazeBEStateObj;
-    const { isValidStatus, setStatus, getStatus } = utilFunctionsStateBE;
+    const { mazeState, utilStateFunctions } = state;
+    const { isValidStatus, setStatus } = utilStateFunctions;
 
     if (isValidStatus(MazeStatusEnum.CREATED)) {
-        algorithmModule?.init(currentCellObj, mazeBEState, mazeFEState);
+        algorithmModule?.init(currentCellObj, mazeState);
     }
 
     useEffect(() => {
@@ -30,11 +28,11 @@ export const Maze = (props) => {
             if (isValidStatus(MazeStatusEnum.FINISHED)) return;
 
             if (!isValidStatus(MazeStatusEnum.STARTED) && !isValidStatus(MazeStatusEnum.NEXT_FRAME)) {
-                drawCells(mazeBEState.grid, mazeFEState, canvasContext);
+                drawCells(mazeState.grid, mazeState, canvasContext);
                 return;
             } else {
-                algorithmModule?.generateMazeStep(currentCellObj, mazeBEState, setStatus);
-                drawCells(mazeBEState.grid, mazeFEState, canvasContext);
+                algorithmModule?.generateMazeStep(currentCellObj, mazeState, setStatus);
+                drawCells(mazeState.grid, mazeState, canvasContext);
 
                 if (isValidStatus(MazeStatusEnum.NEXT_FRAME)) {
                     setStatus(MazeStatusEnum.STOPPED);
@@ -43,7 +41,7 @@ export const Maze = (props) => {
 
             timeout = setTimeout(() => {
                 animationFrameId = window.requestAnimationFrame(generateMazeAnimator);
-            }, isValidStatus(MazeStatusEnum.NEXT_FRAME) ? delayForNextFrame : mazeFEState.delay);
+            }, isValidStatus(MazeStatusEnum.NEXT_FRAME) ? delayForNextFrame : mazeState.delay);
         }
         generateMazeAnimator();
 
@@ -51,7 +49,7 @@ export const Maze = (props) => {
             clearTimeout(timeout);
             window.cancelAnimationFrame(animationFrameId);
         }
-    }, [mazeBEState, mazeFEState]);
+    }, [mazeState]);
 
     return (
         <></>

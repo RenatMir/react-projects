@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { MazeLayout } from "#root/projects/maze-generator/MazeLayout";
-import { MazeGenerationAlgorithms, MazeStatusEnum, generateGrid, getMazeBEInitialState, getMazeFEInitialState, mazeGenerationAlgorithmsToSelect } from "#root/projects/maze-generator/MazeUtils";
+import { MazeGenerationAlgorithms, MazeStatusEnum, generateGrid, getMazeInitialState, mazeGenerationAlgorithmsToSelect } from "#root/projects/maze-generator/MazeUtils";
 import { Slider, InputNumber, Select, ColorPicker } from "antd";
 
 import "@/assets/css/pages/maze-generator.css"
@@ -8,20 +8,19 @@ import "@/assets/css/components.css"
 import "@/assets/css/ant-components.css"
 
 function MazeGenerator() {
-    const [mazeFEState, setMazeFEState] = useState(getMazeFEInitialState());
-    const [mazeBEState, setMazeBEState] = useState(getMazeBEInitialState());
+    const [mazeState, setMazeState] = useState(getMazeInitialState());
     const [algorithmModule, setAlgorithmModule] = useState(null);
 
     const algorithmsSelect = useMemo(() => mazeGenerationAlgorithmsToSelect(), []);
 
     useEffect(() => {
         const loadAlgorithmModule = async () => {
-            const algorithmModule = await import(`#root/projects/maze-generator/algorithms/${mazeBEState.algorithm.filePath}.js`);
+            const algorithmModule = await import(`#root/projects/maze-generator/algorithms/${mazeState.algorithm.filePath}.js`);
             setAlgorithmModule(algorithmModule);
         }
 
         loadAlgorithmModule();
-    }, [mazeBEState.algorithm]);
+    }, [mazeState.algorithm]);
 
     return (
         <div className="page">
@@ -35,7 +34,7 @@ function MazeGenerator() {
                         <div className="setting-value">
                             <Select
                                 disabled={!isValidStatus(MazeStatusEnum.CREATED)}
-                                value={mazeBEState.algorithm}
+                                value={mazeState.algorithm}
                                 onChange={setAlgorithm}
                                 options={algorithmsSelect}
                             />
@@ -50,7 +49,7 @@ function MazeGenerator() {
                                 disabled={!isValidStatus(MazeStatusEnum.CREATED)}
                                 min={2}
                                 max={60}
-                                value={mazeFEState.rowsColsNumber}
+                                value={mazeState.rowsColsNumber}
                                 onChange={handleGridSizeSettingUpdate}
                             />
                         </div>
@@ -65,13 +64,13 @@ function MazeGenerator() {
                                 min={0}
                                 max={2000}
                                 onChange={handleDelaySettingUpdate}
-                                value={mazeFEState.delay}
+                                value={mazeState.delay}
                             />
                             <InputNumber
                                 disabled={isValidStatus(MazeStatusEnum.STARTED)}
                                 min={0}
                                 max={2000}
-                                value={mazeFEState.delay}
+                                value={mazeState.delay}
                                 onChange={handleDelaySettingUpdate}
                             />
                         </div>
@@ -83,7 +82,7 @@ function MazeGenerator() {
                         <div className="setting-value">
                             <ColorPicker
                                 disabled={isValidStatus(MazeStatusEnum.STARTED) || isValidStatus(MazeStatusEnum.NEXT_FRAME)}
-                                value={mazeFEState.currentCellColor}
+                                value={mazeState.currentCellColor}
                                 onChange={setCurrentCellColor}
                             />
                         </div>
@@ -95,14 +94,14 @@ function MazeGenerator() {
                         <div className="setting-value">
                             <ColorPicker
                                 disabled={isValidStatus(MazeStatusEnum.STARTED) || isValidStatus(MazeStatusEnum.NEXT_FRAME)}
-                                value={mazeFEState.backgroundColor}
+                                value={mazeState.backgroundColor}
                                 onChange={setMazeBackgroundColor}
                             />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="main-section" style={{ width: mazeFEState.width }}>
+            <div className="main-section" style={{ width: mazeState.width }}>
                 <h2 className="headline">Maze Generator</h2>
 
                 <div className="flow-buttons">
@@ -114,20 +113,13 @@ function MazeGenerator() {
 
                 <MazeLayout
                     state={{
-                        mazeFEStateObj: {
-                            mazeFEState,
-                            utilFunctionsStateFE: {
-                                setStartCell
-                            }
-                        },
-                        mazeBEStateObj: {
-                            mazeBEState,
-                            utilFunctionsStateBE: {
-                                isValidStatus,
-                                getStatus,
-                                setStatus,
-                                resetGrid
-                            }
+                        mazeState,
+                        utilStateFunctions: {
+                            setStartCell,
+                            isValidStatus,
+                            getStatus,
+                            setStatus,
+                            resetGrid
                         }
                     }}
                     algorithmModule={algorithmModule}
@@ -139,7 +131,7 @@ function MazeGenerator() {
     );
 
     function setStartCell(rowNum, colNum) {
-        setMazeFEState(prev => {
+        setMazeState(prev => {
             return {
                 ...prev,
                 start: {
@@ -151,7 +143,7 @@ function MazeGenerator() {
     }
 
     function setCurrentCellColor(currentCellColor) {
-        setMazeFEState(prev => {
+        setMazeState(prev => {
             return {
                 ...prev,
                 currentCellColor: currentCellColor.toHexString()
@@ -160,7 +152,7 @@ function MazeGenerator() {
     }
 
     function setMazeBackgroundColor(backgroundColor) {
-        setMazeFEState(prev => {
+        setMazeState(prev => {
             return {
                 ...prev,
                 backgroundColor: backgroundColor.toHexString()
@@ -169,7 +161,7 @@ function MazeGenerator() {
     }
 
     function setMazeRowsCols(rowsColsNumber) {
-        setMazeFEState(prev => {
+        setMazeState(prev => {
             return {
                 ...prev,
                 rowsColsNumber
@@ -178,7 +170,7 @@ function MazeGenerator() {
     }
 
     function setDelay(delay) {
-        setMazeFEState(prev => {
+        setMazeState(prev => {
             return {
                 ...prev,
                 delay
@@ -187,15 +179,15 @@ function MazeGenerator() {
     }
 
     function isValidStatus(status) {
-        return mazeBEState.status === status;
+        return mazeState.status === status;
     }
 
     function getStatus() {
-        return mazeBEState.status;
+        return mazeState.status;
     }
 
     function setStatus(status) {
-        setMazeBEState(prev => {
+        setMazeState(prev => {
             return {
                 ...prev,
                 status: status
@@ -204,11 +196,11 @@ function MazeGenerator() {
     }
 
     function resetGrid() {
-        mazeBEState.grid = generateGrid(mazeFEState.rowsColsNumber)
+        mazeState.grid = generateGrid(mazeState.rowsColsNumber)
     }
 
     function setGrid(rowsColsNumber) {
-        setMazeBEState(prev => {
+        setMazeState(prev => {
             return {
                 ...prev,
                 grid: generateGrid(rowsColsNumber)
@@ -217,7 +209,7 @@ function MazeGenerator() {
     }
 
     function setAlgorithm(newAlgorithmKey) {
-        setMazeBEState(prev => {
+        setMazeState(prev => {
             return {
                 ...prev,
                 algorithm: MazeGenerationAlgorithms[newAlgorithmKey]
@@ -232,8 +224,7 @@ function MazeGenerator() {
     }
 
     function handleResetClick() {
-        setMazeFEState(getMazeFEInitialState())
-        setMazeBEState(getMazeBEInitialState())
+        setMazeState(getMazeInitialState())
     }
 
     function handleStopClick() {

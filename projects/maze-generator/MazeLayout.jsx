@@ -4,11 +4,8 @@ import { MazeStatusEnum } from "./MazeUtils";
 
 export const MazeLayout = (props) => {
     const { state, algorithmModule } = props;
-    const { mazeFEStateObj, mazeBEStateObj } = state;
-    const { mazeFEState, utilFunctionsStateFE } = mazeFEStateObj;
-    const { mazeBEState, utilFunctionsStateBE } = mazeBEStateObj;
-    const { setStartCell } = utilFunctionsStateFE;
-    const { isValidStatus } = utilFunctionsStateBE;
+    const { mazeState, utilStateFunctions } = state;
+    const { setStartCell, isValidStatus } = utilStateFunctions;
 
     const canvasRef = useRef(null);
 
@@ -17,23 +14,17 @@ export const MazeLayout = (props) => {
             <canvas
                 ref={canvasRef}
                 className="maze-canvas"
-                height={mazeFEState.height}
-                width={mazeFEState.width}
+                height={mazeState.height}
+                width={mazeState.width}
                 onClick={handleCanvasClick}
             />
             <Maze
                 state={{
-                    mazeFEStateObj: {
-                        mazeFEState,
-                        utilFunctionsStateFE
-                    },
-                    mazeBEStateObj: {
-                        mazeBEState,
-                        utilFunctionsStateBE
-                    }
+                    mazeState,
+                    utilStateFunctions
                 }}
-                canvasRef={canvasRef}
                 algorithmModule={algorithmModule}
+                canvasRef={canvasRef}
             />
         </>
     );
@@ -48,7 +39,7 @@ export const MazeLayout = (props) => {
         const x = (event.clientX - rect.left) * scaleX;
         const y = (event.clientY - rect.top) * scaleY;
 
-        const cellDim = mazeFEState.height / mazeFEState.rowsColsNumber;
+        const cellDim = mazeState.height / mazeState.rowsColsNumber;
         const rowNum = Math.floor(Math.abs(y) / cellDim);
         const colNum = Math.floor(Math.abs(x) / cellDim);
 

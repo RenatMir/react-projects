@@ -1,4 +1,4 @@
-export const getMazeFEInitialState = () => {
+export const getMazeInitialState = () => {
     return {
         height: 800,
         width: 800,
@@ -13,13 +13,8 @@ export const getMazeFEInitialState = () => {
         cellBorders: {
             color: "white",
             width: 2
-        }
-    }
-}
-
-export const getMazeBEInitialState = (start) => {
-    return {
-        grid: generateGrid(20, start),
+        },
+        grid: generateGrid(20),
         status: MazeStatusEnum.CREATED,
         algorithm: MazeGenerationAlgorithms.DFS,
         stack: []
