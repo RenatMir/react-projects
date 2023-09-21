@@ -1,121 +1,83 @@
+import { useState } from "react";
+import { getInitialState, MinesweeperStatusEnum, getNumberOfFlags } from "#root/projects/minesweeper/utils";
+import { Board } from "#root/projects/minesweeper/Board";
+
 import "@/assets/css/pages/minesweeper.css"
 
 function Minesweeper() {
+    const [boardState, setBoardState] = useState(getInitialState());
+
+    const numberOfFlags = getNumberOfFlags(boardState);
+
+    if (numberOfFlags === boardState.minesNumber) {
+        alert("You won");
+    }
 
     return (
         <div className="page">
             <div className="settings">
-                {/* <h2 className="headline">Settings</h2>
-                <div className="settings-configuration-block">
-                    <div className="algorithm">
-                        <div className="setting-label">
-                            Algorithm:
-                        </div>
-                        <div className="setting-value">
-                            <Select
-                                disabled={!isValidStatus(MazeStatusEnum.CREATED)}
-                                value={mazeBEState.algorithm}
-                                onChange={setAlgorithm}
-                                options={algorithmsSelect}
-                            />
-                        </div>
-                    </div>
-                    <div className="grid-size">
-                        <div className="setting-label">
-                            Grid Size (2-60):
-                        </div>
-                        <div className="setting-value">
-                            <InputNumber
-                                disabled={!isValidStatus(MazeStatusEnum.CREATED)}
-                                min={2}
-                                max={60}
-                                value={mazeFEState.rowsColsNumber}
-                                onChange={handleGridSizeSettingUpdate}
-                            />
-                        </div>
-                    </div>
-                    <div className="delay">
-                        <div className="setting-label">
-                            Delay (ms):
-                        </div>
-                        <div className="setting-value">
-                            <Slider
-                                disabled={isValidStatus(MazeStatusEnum.STARTED)}
-                                min={0}
-                                max={2000}
-                                onChange={handleDelaySettingUpdate}
-                                value={mazeFEState.delay}
-                            />
-                            <InputNumber
-                                disabled={isValidStatus(MazeStatusEnum.STARTED)}
-                                min={0}
-                                max={2000}
-                                value={mazeFEState.delay}
-                                onChange={handleDelaySettingUpdate}
-                            />
-                        </div>
-                    </div>
-                    <div className="current-cell-color">
-                        <div className="setting-label">
-                            Current Cell Color:
-                        </div>
-                        <div className="setting-value">
-                            <ColorPicker
-                                disabled={isValidStatus(MazeStatusEnum.STARTED) || isValidStatus(MazeStatusEnum.NEXT_FRAME)}
-                                value={mazeFEState.currentCellColor}
-                                onChange={setCurrentCellColor}
-                            />
-                        </div>
-                    </div>
-                    <div className="maze-background-color">
-                        <div className="setting-label">
-                            Maze Background Color:
-                        </div>
-                        <div className="setting-value">
-                            <ColorPicker
-                                disabled={isValidStatus(MazeStatusEnum.STARTED) || isValidStatus(MazeStatusEnum.NEXT_FRAME)}
-                                value={mazeFEState.backgroundColor}
-                                onChange={setMazeBackgroundColor}
-                            />
-                        </div>
-                    </div>
-                </div> */}
             </div>
-            <div className="main-section" style={{ width: 800 }}>
-                <h2 className="headline">Maze Generator</h2>
-
-                {/* <div className="flow-buttons">
+            <div className="main-section" style={{ width: boardState.width }}>
+                <h2 className="headline">Minesweeper</h2>
+                <div className="flow-buttons">
                     <button className="project-button" onClick={handleStartClick}>Start</button>
                     <button className="project-button" onClick={handleResetClick}>Reset</button>
-                    <button className="project-button" onClick={handleStopClick}>Stop</button>
-                    <button className="project-button" id="next-frame-button" onClick={handleNextFrameClick}>Next Frame</button>
-                </div> */}
-
-                {/* <MazeLayout
-                    state={{
-                        mazeFEStateObj: {
-                            mazeFEState,
-                            utilFunctionsStateFE: {
-                                setStartCell
-                            }
-                        },
-                        mazeBEStateObj: {
-                            mazeBEState,
-                            utilFunctionsStateBE: {
-                                isValidStatus,
-                                getStatus,
-                                setStatus,
-                                resetGrid
-                            }
-                        }
+                </div>
+                <Board
+                    boardState={boardState}
+                    stateFunctions={{
+                        setCellRevealed,
+                        updateCellFlagged
                     }}
-                    algorithmModule={algorithmModule}
-                /> */}
+                />
             </div>
 
             <div className="additional-information"></div>
         </div>
     );
+
+    function isValidStatus(status) {
+        return boardState.gameStatus === status;
+    }
+
+    function setStatus(status) {
+        setBoardState(prev => {
+            return {
+                ...prev,
+                gameStatus: status
+            }
+        });
+    }
+
+    function setCellRevealed(cell) {
+        setBoardState(prev => {
+            prev.board[cell.rowNum][cell.colNum].isRevealed = true;
+            return {
+                ...prev,
+                board: prev.board
+            }
+        });
+    }
+
+    function updateCellFlagged(cell) {
+        setBoardState(prev => {
+            prev.board[cell.rowNum][cell.colNum].isFlagged = !cell.isFlagged;
+            return {
+                ...prev,
+                board: prev.board
+            }
+        });
+    }
+
+    function handleStartClick() {
+        if (isValidStatus(MinesweeperStatusEnum.STARTED)) return;
+
+        setStatus(MinesweeperStatusEnum.STARTED);
+    }
+
+    function handleResetClick() {
+        setBoardState(getInitialState())
+    }
 }
 
 export default Minesweeper

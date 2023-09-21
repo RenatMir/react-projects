@@ -1,0 +1,15 @@
+.board {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.cell {
+    border: 1px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell-data {
+    font-size: 3rem;
+}

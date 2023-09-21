@@ -7,8 +7,8 @@ function App() {
   return (
     <div className="pages-container">
 
-      {/* <Minesweeper /> */}
-      <MazeGenerator />
+      <Minesweeper />
+      {/* <MazeGenerator /> */}
     </div>
   )
 }

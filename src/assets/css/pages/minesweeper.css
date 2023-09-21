@@ -4,3 +4,35 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+.settings {
+    min-height: inherit;
+    display: flex;
+    width: 30%;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.main-section {
+    min-height: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1rem;
+    align-items: center;
+    min-height: inherit;
+    min-width: inherit;
+}
+
+.additional-information {
+    min-height: inherit;
+    display: flex;
+    width: 30%;
+}
+
+.flow-buttons {
+    display: flex;
+    gap: 2rem;
+}

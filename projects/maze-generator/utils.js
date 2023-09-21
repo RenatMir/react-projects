@@ -1,4 +1,4 @@
-export const getMazeInitialState = () => {
+export const getInitialState = () => {
     return {
         height: 800,
         width: 800,

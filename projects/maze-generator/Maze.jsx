@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { MazeStatusEnum, checkNeighbours, drawCells, removeWalls } from "./MazeUtils";
+import { MazeStatusEnum, checkNeighbours, drawCells, removeWalls } from "./utils";
 
 //Is used for delay the next frame logic. If set to 0, the next frame logic could be rendered twice
 const delayForNextFrame = 2000;

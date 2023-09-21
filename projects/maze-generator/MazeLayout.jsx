@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import { Maze } from "./Maze";
-import { MazeStatusEnum } from "./MazeUtils";
+import { MazeStatusEnum } from "./utils";
 
 export const MazeLayout = (props) => {
     const { state, algorithmModule } = props;

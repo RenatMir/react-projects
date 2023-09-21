@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { MazeLayout } from "#root/projects/maze-generator/MazeLayout";
-import { MazeGenerationAlgorithms, MazeStatusEnum, generateGrid, getMazeInitialState, mazeGenerationAlgorithmsToSelect } from "#root/projects/maze-generator/MazeUtils";
+import { MazeGenerationAlgorithms, MazeStatusEnum, generateGrid, getInitialState, mazeGenerationAlgorithmsToSelect } from "#root/projects/maze-generator/utils";
 import { Slider, InputNumber, Select, ColorPicker } from "antd";
 
 import "@/assets/css/pages/maze-generator.css"
@@ -8,7 +8,7 @@ import "@/assets/css/components.css"
 import "@/assets/css/ant-components.css"
 
 function MazeGenerator() {
-    const [mazeState, setMazeState] = useState(getMazeInitialState());
+    const [mazeState, setMazeState] = useState(getInitialState());
     const [algorithmModule, setAlgorithmModule] = useState(null);
 
     const algorithmsSelect = useMemo(() => mazeGenerationAlgorithmsToSelect(), []);
@@ -224,7 +224,7 @@ function MazeGenerator() {
     }
 
     function handleResetClick() {
-        setMazeState(getMazeInitialState())
+        setMazeState(getInitialState())
     }
 
     function handleStopClick() {
